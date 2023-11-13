@@ -1,0 +1,1 @@
+`ctrl + L`: Clean terminal screen.
