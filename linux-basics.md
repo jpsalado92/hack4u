@@ -1,4 +1,44 @@
+## Concepts
+### File attributes
+```bash
+# Listing advanced permissions (-a for show hidden and -R for recursively)
+lsattr -aR
+# Setting advanced permissions (-R for recursively, -V for verbosing and -f to ignore errors)
+chattr +i 
+```
+`-i`: Makes a file immutable
+`-c`: Stores the file compressed in disk
+`-u`: Makes the file recoverable if deleted
+`-e`: Make a clean removal if file is deleted
+`-S`: Synchronously reflect changes in the file in the HD
 
+
+More info at man `chattr`
+
+### The sticky bit
+The main purpose of the sticky bit is to prevent users from deleting files within a directory that they do not own. In a directory with the sticky bit set, only the file owner, directory owner, or superuser can delete or rename the files within it, even if other users have write permissions on that directory.
+
+For instance, it's commonly used on directories like /tmp, which is a shared directory where multiple users can read and write files. The sticky bit ensures that users can create and modify files within /tmp but cannot delete or rename files owned by other users.
+
+It is also to enforce keeping in memory the programs that have it set, even if they have been executed already.
+
+
+In order to set it
+
+```bash
+# Set
+chmod +t /test.
+# Unset
+chmod -t /test.
+```
+or use the `1` before the octal representation of the permissions for a file.
+```bash
+# Set
+chmod 1775 test
+# Unset
+chmod 0775 test
+```
+## FAQ
 ### What user am I?
 ```bash
 $ whoami
@@ -76,5 +116,5 @@ $ groupadd Alumnos
 # Add the user pepe to the group
 $ usermod -a -G Alumnos pepe
 ```
-### What is the sticky bit?
+
 
