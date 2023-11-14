@@ -38,6 +38,42 @@ chmod 1775 test
 # Unset
 chmod 0775 test
 ```
+
+**SUID (Set User ID):**
+
+The SUID permission allows a file to be executed as if it were the owner, regardless of the user executing it, the file will be executed as the owner.
+
+Of course, one thing to keep in mind and quite important, is that the SUID permission does not work in scripts, it only works in compiled binaries. This is done for security reasons. In any case, if you wanted to enable the execution of a script as another user, you can always use sudo.
+
+The SUID does not apply to directories because there is no compelling reason why it should.
+
+In order to set it:
+```bash
+chmod u+s /usr/bin/python3.9
+chmod 4xxx /usr/bin/python3.9
+```
+## SGID (Set Group ID)
+
+SGID permission is related to groups, it has two functions:
+
+- If set to a file, allows any user to run the file as if they were a member of the group to which the file belongs.
+- If set to a directory, any file created in the directory will be assigned as a group belonging to the directory's group.
+
+For directories, the logic of the SGID and the reason for its existence is if we work in a group, so that we can all access other people's files. If SGID did not exist, every time each person created a file, they would have to change it from their group to the project's common group. Likewise, we avoid having to assign permissions to "Others".
+
+When the SGID permission is assigned, we can notice it because in the permissions, in the group part, in the execution permission an s will be assigned. Be careful, two distinctions must be made here:
+
+- If the file has executable permissions, it will be assigned a lowercase `s`.
+- If the file does NOT have executable permissions, it will be assigned a capital `S`.
+
+This really has no relevance for directories, only for files. In any case, this characteristic of upper or lower case s depending on the execution permission is always applied, included in the SUID permission.
+
+In order to set it:
+```bash
+chmod g+s /usr/bin/python3.9
+chmod 2xxx /usr/bin/python3.9
+```
+
 ## FAQ
 ### What user am I?
 ```bash
