@@ -6,22 +6,21 @@ lsattr -aR
 # Setting advanced permissions (-R for recursively, -V for verbosing and -f to ignore errors)
 chattr +i 
 ```
-`-i`: Makes a file immutable
-`-c`: Stores the file compressed in disk
-`-u`: Makes the file recoverable if deleted
-`-e`: Make a clean removal if file is deleted
-`-S`: Synchronously reflect changes in the file in the HD
+- `-i`: Makes a file immutable
+- `-c`: Stores the file compressed in disk
+- `-u`: Makes the file recoverable if deleted
+- `-e`: Make a clean removal if file is deleted
+- `-S`: Synchronously reflect changes in the file in the HD
 
 
 More info at man `chattr`
 
 ### The sticky bit
-The main purpose of the sticky bit is to prevent users from deleting files within a directory that they do not own. In a directory with the sticky bit set, only the file owner, directory owner, or superuser can delete or rename the files within it, even if other users have write permissions on that directory.
+The main purpose of the sticky bit is to prevent users from deleting or renaming files within a directory that they do not own. In a directory with the sticky bit set, only the file owner, directory owner, or superuser can delete or rename the files within it, even if other users have write permissions on that directory.
 
-For instance, it's commonly used on directories like /tmp, which is a shared directory where multiple users can read and write files. The sticky bit ensures that users can create and modify files within /tmp but cannot delete or rename files owned by other users.
+For instance, it's commonly used on directories like `/tmp`, which is a shared directory where multiple users can read and write files. The sticky bit ensures that users can create and modify files within `/tmp` but cannot delete or rename files owned by other users.
 
-It is also to enforce keeping in memory the programs that have it set, even if they have been executed already.
-
+It doesn't typically make sense to set the sticky bit on a file due to its intended functionality being associated specifically with directory permissions.
 
 In order to set it
 
@@ -39,34 +38,28 @@ chmod 1775 test
 chmod 0775 test
 ```
 
-**SUID (Set User ID):**
+## SUID (Set User ID)
 
-The SUID permission allows a file to be executed as if it were the owner, regardless of the user executing it, the file will be executed as the owner.
-
-Of course, one thing to keep in mind and quite important, is that the SUID permission does not work in scripts, it only works in compiled binaries. This is done for security reasons. In any case, if you wanted to enable the execution of a script as another user, you can always use sudo.
-
-The SUID does not apply to directories because there is no compelling reason why it should.
+The Set User ID (SUID) permission is used to allow users to execute a particular executable file with the permissions of the file owner rather than their own permissions. This elevated access can be crucial for certain system utilities that need to perform actions that regular users don't have permission to execute.
 
 In order to set it:
 ```bash
 chmod u+s /usr/bin/python3.9
 chmod 4xxx /usr/bin/python3.9
 ```
+### Examples
+
+- The `passwd` command allows users to change their passwords. Since the password file (`/etc/passwd` or `/etc/shadow`) is typically owned by root and has restricted permissions, the passwd executable has the SUID bit set. This enables regular users to execute passwd and change their passwords, as the process temporarily runs with root permissions, enabling the necessary write access to the password file.
+
+- Programs like `top` or `ps` display system processes. They often require access to system information that regular users wouldn't have. The SUID bit is set on these executables, allowing them to gather system information and display processes even for non-privileged users.
+
+- `ifconfig` allows users to configure network interfaces. Since changing network configurations requires system-level permissions, `ifconfig` is often set with the SUID bit. This allows regular users to execute it to view network configurations and, if necessary, modify them without needing root access.
+
+- **Mounting** and **unmounting** drives require elevated permissions. The SUID bit is set on these executables to allow regular users to mount and unmount filesystems without needing root access, provided they are specified in `/etc/fstab` and have appropriate options set.
+
 ## SGID (Set Group ID)
 
-SGID permission is related to groups, it has two functions:
-
-- If set to a file, allows any user to run the file as if they were a member of the group to which the file belongs.
-- If set to a directory, any file created in the directory will be assigned as a group belonging to the directory's group.
-
-For directories, the logic of the SGID and the reason for its existence is if we work in a group, so that we can all access other people's files. If SGID did not exist, every time each person created a file, they would have to change it from their group to the project's common group. Likewise, we avoid having to assign permissions to "Others".
-
-When the SGID permission is assigned, we can notice it because in the permissions, in the group part, in the execution permission an s will be assigned. Be careful, two distinctions must be made here:
-
-- If the file has executable permissions, it will be assigned a lowercase `s`.
-- If the file does NOT have executable permissions, it will be assigned a capital `S`.
-
-This really has no relevance for directories, only for files. In any case, this characteristic of upper or lower case s depending on the execution permission is always applied, included in the SUID permission.
+Set Group ID (SGID) is a permission in Unix-like systems that, when applied to a directory, allows newly created files and directories within it to inherit the group ownership of the parent directory. It can also be applied to executable files, ensuring that when they are executed, they run with the group ownership of the file rather than the user's primary group.
 
 In order to set it:
 ```bash
@@ -74,6 +67,14 @@ chmod g+s /usr/bin/python3.9
 chmod 2xxx /usr/bin/python3.9
 ```
 
+### Examples
+- **Collaborative Workspaces**: Project directories where multiple users collaborate often have the SGID bit set. This ensures that all files and directories created within this project directory inherit the group ownership of the project group, allowing all users in that group to access and modify the files irrespective of who created them.
+
+- **Shared Directories**: Shared directories used by a group of users, such as those for storing shared documents or resources, might have the SGID bit set. This ensures that all files created within this directory inherit the group ownership of the shared group, facilitating easy sharing and collaboration among the designated group members.
+
+## Capabilities
+
+---
 ## FAQ
 ### What user am I?
 ```bash
