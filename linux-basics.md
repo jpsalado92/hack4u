@@ -73,7 +73,29 @@ chmod 2xxx /usr/bin/python3.9
 - **Shared Directories**: Shared directories used by a group of users, such as those for storing shared documents or resources, might have the SGID bit set. This ensures that all files created within this directory inherit the group ownership of the shared group, facilitating easy sharing and collaboration among the designated group members.
 
 ## Capabilities
+### Capabilities
+Capabilities in Linux refer to the fine-grained access control mechanisms that define what specific actions a process can perform. They allow processes to have different levels of permissions beyond the traditional read, write, and execute.
 
+**Set capability**
+```bash
+# Set capability
+setcap cap_setuid+ep /usr/bin/python3.9
+# Unset capability
+setcap -r /usr/bin/python3.9
+```
+
+Some common capabilities:
+- **CAP_CHOWN**: Allows a process to change file ownership.
+- **CAP_DAC_OVERRIDE**: Bypass file read, write, and execute permission checks.
+- **CAP_DAC_READ_SEARCH**: Bypass permission checks for read and execute on files and directories.
+- **CAP_NET_BIND_SERVICE**: Bind a socket to internet domain privileged ports (< 1024).
+- **CAP_SYS_ADMIN**: Perform administrative tasks.
+- **CAP_SYS_PTRACE**: Trace arbitrary processes using ptrace.
+- **CAP_SETUID**: Set UID on execution.
+- **CAP_SETGID**: Set GID on execution.
+- **CAP_LEASE**: Establish leases on arbitrary files.
+
+https://www.etl.it.uc3m.es/Linux_Capabilities
 ---
 ## FAQ
 ### What user am I?
