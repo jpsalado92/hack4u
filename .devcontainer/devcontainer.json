@@ -16,29 +16,29 @@
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "sh .devcontainer/post_create_commands.sh",
+  // "postCreateCommand": "sh .devcontainer/post_create_commands.sh",
 
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       "extensions": ["esbenp.prettier-vscode"],
-      "settings": {
-        "editor.tabSize": 4,
-        "terminal.integrated.defaultProfile.linux": "zsh",
-        "terminal.integrated.profiles.linux": {
-          "bash": {
-            "path": "bash",
-            "icon": "terminal-bash"
-          },
-          "zsh": {
-            "path": "zsh"
-          },
-          "tmux": {
-            "path": "tmux",
-            "icon": "terminal-tmux"
-          }
-        }
-      }
+      // "settings": {
+      //   "editor.tabSize": 4,
+      //   "terminal.integrated.defaultProfile.linux": "zsh",
+      //   "terminal.integrated.profiles.linux": {
+      //     "bash": {
+      //       "path": "bash",
+      //       "icon": "terminal-bash"
+      //     },
+      //     "zsh": {
+      //       "path": "zsh"
+      //     },
+      //     "tmux": {
+      //       "path": "tmux",
+      //       "icon": "terminal-tmux"
+      //     }
+      //   }
+      // }
     }
   },
 
