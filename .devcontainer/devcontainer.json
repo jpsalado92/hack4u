@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-  "name": "Parrot-Devcontainer",
+  "name": "archlinux",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "build": {
     // Path is relative to the devcontainer.json file.
@@ -21,24 +21,10 @@
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "extensions": ["esbenp.prettier-vscode"],
-      // "settings": {
-      //   "editor.tabSize": 4,
-      //   "terminal.integrated.defaultProfile.linux": "zsh",
-      //   "terminal.integrated.profiles.linux": {
-      //     "bash": {
-      //       "path": "bash",
-      //       "icon": "terminal-bash"
-      //     },
-      //     "zsh": {
-      //       "path": "zsh"
-      //     },
-      //     "tmux": {
-      //       "path": "tmux",
-      //       "icon": "terminal-tmux"
-      //     }
-      //   }
-      // }
+      "extensions": [
+        "woozy-masta.shell-script-ide",
+        "eamodio.gitlens"
+      ]
     }
   },
 
