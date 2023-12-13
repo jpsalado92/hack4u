@@ -22,8 +22,13 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "woozy-masta.shell-script-ide",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "tetradresearch.vscode-h2o",
+        "foxundermoon.shell-format",
+        "timonwong.shellcheck",
+        "jeff-hykin.better-shellscript-syntax",
+        "rogalmic.bash-debug",
+        "esbenp.prettier-vscode"
       ]
     }
   },
