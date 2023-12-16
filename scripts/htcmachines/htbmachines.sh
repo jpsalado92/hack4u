@@ -30,6 +30,8 @@ function helpPanel() {
     echo -e "\t${purpleColour}i)${endColour} ${grayColour}Buscar por IP${endColour}"
     echo -e "\t${purpleColour}m)${endColour} ${grayColour}Buscar por nombre${endColour}"
     echo -e "\t${purpleColour}u)${endColour} ${grayColour}Actualizar datos base${endColour}"
+    echo -e "\t${purpleColour}y)${endColour} ${grayColour}Obtener link a video resolución por máquina${endColour}"
+    echo -e "\t${purpleColour}d)${endColour} ${grayColour}Listar maquinas por dificultad${endColour}"
     echo -e "\n"
 }
 
@@ -66,17 +68,44 @@ function updateFiles() {
 
 
 function searchMachine() {
-    echo -e "${yellowColour}[+]${endColour} ${grayColour}Listando las propiedades de la máquina $machineName...${endColour}\n"
-    cat bundle.js | awk "/name: \"$machineName\"/,/resuelta:/" | grep -vE "id:|sku:|resuelta" | tr -d "," | tr -d '"' | sed 's/^ *//'
+    echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Listando las propiedades de la máquina $machineName...${endColour}\n"
+    machineProperties="$(cat bundle.js | awk "/name: \"$machineName\"/,/resuelta:/" | grep -vE "id:|sku:|resuelta" | tr -d "," | tr -d '"' | sed 's/^ *//')"
+    if [ "$machineProperties" ]; then
+        echo -e "$machineProperties\n"
+    else
+    echo -e "${redColour}[+] La máquina proporcionada no existe.${endColour}\n"
+    fi
+}
+
+function getYoutubeLink() {
+    machineProperties="$(cat bundle.js | awk "/name: \"$machineName\"/,/resuelta:/" | grep -vE "id:|sku:|resuelta" | tr -d "," | tr -d '"' | sed 's/^ *//')"
+    if [ "$machineProperties" ]; then
+        videoUrl="$(echo "$machineProperties" | grep youtube | awk 'NF{print $NF}')"
+        echo -e "\n${yellowColour}[+]${endColour} ${grayColour}El video de resolución para la máquina ${purpleColour}$machineName${endColour} es: ${blueColour}$videoUrl${endColour}\n"
+    else
+        echo -e "\n${redColour}[+] La máquina proporcionada no existe.${endColour}\n"
+    fi
 }
 function searchIP() {
     machineName=$(cat bundle.js | grep "ip: \"$machineIP\"" -B 3 | grep "name: " | awk 'NF{print $NF}' | tr -d '"' | tr -d ",")
-    echo -e "${yellowColour}[+]${endColour} ${grayColour}La maquina correspondiente para la IP${endColour} ${blueColour}$machineIP${endColour} es ${purpleColour}$machineName${endColour}\n"
-}   
+    if [ "$machineName" ]; then
+        echo -e "\n${yellowColour}[+]${endColour} ${grayColour}La maquina correspondiente para la IP${endColour} ${blueColour}$machineIP${endColour} es ${purpleColour}$machineName${endColour}\n"
+    else
+    echo -e "${redColour}[+] La máquina con IP proporcionada no existe.${endColour}\n"
+    fi
+}
+function getMachineNamesByDifficulty() {
+    machineList=$(cat bundle.js | grep "dificultad: \"$difficultyLevel\"" -B 5 | grep "name: " | awk 'NF{print $NF}' | tr -d "," | tr -d '"' | column)
+    if [ "$machineList" ]; then
+        echo -e"$machineList\n"
+    else
+        echo -e "${redColour}[+] No hay maquinas con la dificultad ${purpleColour}$difficultyLevel.${endColour}\n"
+    fi
+}
 
 declare -i parameter_counter=0
 
-while getopts "hi:m:u" arg; do
+while getopts "hi:m:uy:d:" arg; do
     case $arg in
     m)
         machineName=$OPTARG
@@ -89,6 +118,14 @@ while getopts "hi:m:u" arg; do
         machineIP=$OPTARG
         ((parameter_counter += 3))
         ;;
+    y)
+        machineName=$OPTARG
+        ((parameter_counter += 4))
+        ;;
+    d)
+        difficultyLevel=$OPTARG
+        ((parameter_counter += 5))
+        ;;
     h) ;;
     *) ;;
     esac
@@ -100,6 +137,10 @@ elif [ $parameter_counter -eq 2 ]; then
     updateFiles
 elif [ $parameter_counter -eq 3 ]; then
     searchIP "$machineIP"
+elif [ $parameter_counter -eq 4 ]; then
+    getYoutubeLink "$machineName"
+elif [ $parameter_counter -eq 5 ]; then
+    getMachineNamesByDifficulty "$difficultyLevel"
 else
     helpPanel
 fi
