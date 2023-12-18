@@ -116,10 +116,18 @@ function getMachineNamesByOSAndDifficulty() {
         echo -e "${redColour}[+] No hay maquinas con sistema operativo ${purpleColour}$so${endColour} ${redColour}y dificultad ${endColour}${purpleColour}$difficultyLevel.${endColour}\n"
     fi
 }
+function getMachineNamesBySkill() {
+    machineList=$(cat bundle.js | grep "skills:" -B 6 | grep "$skill" -i -B 6 | grep "name: " | grep "name: " | awk 'NF{print $NF}' | tr -d "," | tr -d '"' | column)
+    if [ "$machineList" ]; then
+        echo -e "$machineList\n"
+    else
+        echo -e "${redColour}[+] No hay maquinas con la skill ${purpleColour}$so${endColour}${endColour}\n"
+    fi
+}
 
 declare -i parameter_counter=0
 
-while getopts "hi:m:uy:d:o:" arg; do
+while getopts "hi:m:uy:d:o:s:" arg; do
     case $arg in
     m)
         machineName=$OPTARG
@@ -146,26 +154,31 @@ while getopts "hi:m:uy:d:o:" arg; do
         is_so_search=true
         ((parameter_counter += 6))
         ;;
+    s)
+        skill=$OPTARG
+        ((parameter_counter += 7))
+        ;;
     h) ;;
     *) ;;
     esac
 done
 
 if [ $parameter_counter -eq 1 ]; then
-    searchMachine "$machineName"
+    searchMachine
 elif [ $parameter_counter -eq 2 ]; then
     updateFiles
 elif [ $parameter_counter -eq 3 ]; then
-    searchIP "$machineIP"
+    searchIP
 elif [ $parameter_counter -eq 4 ]; then
-    getYoutubeLink "$machineName"
+    getYoutubeLink
 elif [ $parameter_counter -eq 5 ]; then
-    getMachineNamesByDifficulty "$difficultyLevel"
+    getMachineNamesByDifficulty
 elif [ $parameter_counter -eq 6 ]; then
-    getMachineNamesByOS "$so"
+    getMachineNamesByOS
+elif [ $parameter_counter -eq 7 ]; then
+    getMachineNamesBySkill
 elif [ "$is_difficulty_search" = true ] && [ "$is_so_search" = true ]; then
-    getMachineNamesByOSAndDifficulty "$difficultyLevel" "$so"
-
+    getMachineNamesByOSAndDifficulty
 else
     helpPanel
 fi
