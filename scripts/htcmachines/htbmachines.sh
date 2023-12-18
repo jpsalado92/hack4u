@@ -22,8 +22,6 @@ function ctrl_c() {
 # Ctrl+C
 trap ctrl_c INT
 
-
-
 function helpPanel() {
     echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Uso:${endColour}"
     echo -e "\t${purpleColour}h)${endColour} ${grayColour}Mostrar panel de ayuda${endColour}"
@@ -32,6 +30,7 @@ function helpPanel() {
     echo -e "\t${purpleColour}u)${endColour} ${grayColour}Actualizar datos base${endColour}"
     echo -e "\t${purpleColour}y)${endColour} ${grayColour}Obtener link a video resolución por máquina${endColour}"
     echo -e "\t${purpleColour}d)${endColour} ${grayColour}Listar maquinas por dificultad${endColour}"
+    echo -e "\t${purpleColour}o)${endColour} ${grayColour}Listar maquinas por sistema operativo${endColour}"
     echo -e "\n"
 }
 
@@ -40,16 +39,16 @@ function updateFiles() {
     if [ ! -f bundle.js ]; then
         # El archivo no existe
         echo -e "${yellowColour}[+]${endColour} ${grayColour}Descargando archivos necesarios...${endColour}\n"
-        curl -s $main_url > bundle.js
-        js-beautify bundle.js > _bundle.js
+        curl -s $main_url >bundle.js
+        js-beautify bundle.js >_bundle.js
         mv _bundle.js bundle.js
         echo -e "${yellowColour}[+]${endColour} ${grayColour}Todos los archivos han sido descargados...${endColour}\n"
     else
         # El archivo existe
         echo -e "${yellowColour}[+]${endColour} ${grayColour}Comprobando si hay actualizaciones pendientes...${endColour}\n"
         sleep 2
-        curl -s $main_url > bundle_temp.js
-        js-beautify bundle_temp.js > _bundle_temp.js
+        curl -s $main_url >bundle_temp.js
+        js-beautify bundle_temp.js >_bundle_temp.js
         mv _bundle_temp.js bundle_temp.js
 
         md5_temp_value=$(md5sum bundle_temp.js | awk '{print $1}')
@@ -66,14 +65,13 @@ function updateFiles() {
     tput cnorm
 }
 
-
 function searchMachine() {
     echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Listando las propiedades de la máquina $machineName...${endColour}\n"
     machineProperties="$(cat bundle.js | awk "/name: \"$machineName\"/,/resuelta:/" | grep -vE "id:|sku:|resuelta" | tr -d "," | tr -d '"' | sed 's/^ *//')"
     if [ "$machineProperties" ]; then
         echo -e "$machineProperties\n"
     else
-    echo -e "${redColour}[+] La máquina proporcionada no existe.${endColour}\n"
+        echo -e "${redColour}[+] La máquina proporcionada no existe.${endColour}\n"
     fi
 }
 
@@ -91,7 +89,7 @@ function searchIP() {
     if [ "$machineName" ]; then
         echo -e "\n${yellowColour}[+]${endColour} ${grayColour}La maquina correspondiente para la IP${endColour} ${blueColour}$machineIP${endColour} es ${purpleColour}$machineName${endColour}\n"
     else
-    echo -e "${redColour}[+] La máquina con IP proporcionada no existe.${endColour}\n"
+        echo -e "${redColour}[+] La máquina con IP proporcionada no existe.${endColour}\n"
     fi
 }
 function getMachineNamesByDifficulty() {
@@ -102,10 +100,26 @@ function getMachineNamesByDifficulty() {
         echo -e "${redColour}[+] No hay maquinas con la dificultad ${purpleColour}$difficultyLevel.${endColour}\n"
     fi
 }
+function getMachineNamesByOS() {
+    machineList=$(cat bundle.js | grep "so: \"$so\"" -B 5 | grep "name: " | awk 'NF{print $NF}' | tr -d "," | tr -d '"' | column)
+    if [ "$machineList" ]; then
+        echo -e "$machineList\n"
+    else
+        echo -e "${redColour}[+] No hay maquinas con el sistema operativo ${purpleColour}$so.${endColour}\n"
+    fi
+}
+function getMachineNamesByOSAndDifficulty() {
+    machineList=$(cat bundle.js | grep "dificultad: \"$difficultyLevel\"" -B 5 | grep "so: \"$so\"" -B 5 | grep "name: " | awk 'NF{print $NF}' | tr -d "," | tr -d '"' | column)
+    if [ "$machineList" ]; then
+        echo -e "$machineList\n"
+    else
+        echo -e "${redColour}[+] No hay maquinas con sistema operativo ${purpleColour}$so${endColour} ${redColour}y dificultad ${endColour}${purpleColour}$difficultyLevel.${endColour}\n"
+    fi
+}
 
 declare -i parameter_counter=0
 
-while getopts "hi:m:uy:d:" arg; do
+while getopts "hi:m:uy:d:o:" arg; do
     case $arg in
     m)
         machineName=$OPTARG
@@ -124,7 +138,13 @@ while getopts "hi:m:uy:d:" arg; do
         ;;
     d)
         difficultyLevel=$OPTARG
+        is_difficulty_search=true
         ((parameter_counter += 5))
+        ;;
+    o)
+        so=$OPTARG
+        is_so_search=true
+        ((parameter_counter += 6))
         ;;
     h) ;;
     *) ;;
@@ -141,6 +161,11 @@ elif [ $parameter_counter -eq 4 ]; then
     getYoutubeLink "$machineName"
 elif [ $parameter_counter -eq 5 ]; then
     getMachineNamesByDifficulty "$difficultyLevel"
+elif [ $parameter_counter -eq 6 ]; then
+    getMachineNamesByOS "$so"
+elif [ "$is_difficulty_search" = true ] && [ "$is_so_search" = true ]; then
+    getMachineNamesByOSAndDifficulty "$difficultyLevel" "$so"
+
 else
     helpPanel
 fi
