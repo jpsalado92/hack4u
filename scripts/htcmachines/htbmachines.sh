@@ -11,10 +11,6 @@ purpleColour="\e[0;35m\033[1m"
 turquoiseColour="\e[0;36m\033[1m"
 grayColour="\e[0;37m\033[1m"
 
-declare -r tmp_file="/dev/shm/tmp_file"
-declare -r tmp_file2="/dev/shm/tmp_file2"
-declare -r tmp_file3="/dev/shm/tmp_file3"
-
 function ctrl_c() {
     echo -e "\n\n${redColour} [!] Saliendo...\n${endColour}"
     tput civis cnorm && exit 1
