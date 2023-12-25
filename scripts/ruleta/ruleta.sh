@@ -28,6 +28,32 @@ function helpPanel() {
 
 }
 
+function martingala() {
+    echo -e "\n${yellowColour}[+]${endColour}${grayColour} Dinero actual:${endColour} ${yellowColour}$money€${endColour}"
+    echo -en "${yellowColour}[+]${endColour}${grayColour} ¿Cuánto dinero quieres apostar? -> ${endColour}" && read initial_bet
+    echo -en "${yellowColour}[+]${endColour}${grayColour} ¿A qué deseas apostar continuamente (par/impar)? -> ${endColour}" && read par_impar
+    echo -en "${yellowColour}[+]${endColour}${grayColour} Vamos a jugar con la catidad de: ${endColour}${yellowColour}$initial_bet€${endColour} ${grayColour}a${endColour} ${yellowColour}$par_impar${endColour}\n"
+    tput civis
+    while true; do
+        random_number="$(($RANDOM % 37))"
+        echo -e "\n${yellowColour}[+]${endColour}${grayColour} Ha salido el ${blueColour}$random_number${endColour}"
+        if [[ "$(("$random_number" % 2))" -eq 0 ]]; then
+            if [[ "$random_number" -eq 0 ]]; then
+                echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido el 0, por lo tanto perdemos${endColour}"
+            else
+                echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido un número par${endColour}"
+            fi
+        else
+            echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido un número impar${endColour}"
+        fi
+    sleep 2
+    done
+
+    tput cnorm
+
+}
+
+
 while getopts "m:t:h" arg; do
     case $arg in
     m)
@@ -48,9 +74,10 @@ while getopts "m:t:h" arg; do
 done
 
 if [ "$money" ] && [ "$technique" ]; then 
-    if [ "$technique" == "inverseLabrouchere" ]; then
-    echo -e "\n${yellowColour}[+]${endColour} Voy a jugar con ${purpleColour}$money${endColour} usando la tecnica ${purpleColour}$technique${endColour}\n"
-    elif [ "$technique" == "martingala" ]; then
+    if [ "$technique" == "martingala" ]; then
+    echo -e "\n${yellowColour}[+]${endColour} Voy a jugar con ${purpleColour}$money€${endColour} usando la tecnica ${purpleColour}$technique${endColour}\n"
+        martingala
+    elif [ "$technique" == "inverseLabrouchere" ]; then
         echo "w"
     else
         echo -e "${redColour}[+] La tecnica proporcionada no existe.${endColour}\n"
