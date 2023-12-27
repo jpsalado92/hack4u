@@ -34,25 +34,61 @@ function martingala() {
     echo -en "${yellowColour}[+]${endColour}${grayColour} ¿A qué deseas apostar continuamente (par/impar)? -> ${endColour}" && read par_impar
     echo -en "${yellowColour}[+]${endColour}${grayColour} Vamos a jugar con la catidad de: ${endColour}${yellowColour}$initial_bet€${endColour} ${grayColour}a${endColour} ${yellowColour}$par_impar${endColour}\n"
     tput civis
+    backup_bet=$initial_bet
     while true; do
+        money=$(($money - $initial_bet))
+        echo -e "\n${yellowColour}[+]${endColour}${grayColour} Has apostado ${yellowColour}$initial_bet€${grayColour} y te quedan ${yellowColour}$money€${endColour}"
         random_number="$(($RANDOM % 37))"
-        echo -e "\n${yellowColour}[+]${endColour}${grayColour} Ha salido el ${blueColour}$random_number${endColour}"
-        if [[ "$(("$random_number" % 2))" -eq 0 ]]; then
-            if [[ "$random_number" -eq 0 ]]; then
-                echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido el 0, por lo tanto perdemos${endColour}"
+        echo -e "${yellowColour}[+]${endColour}${grayColour} Ha salido el ${blueColour}$random_number${endColour}"
+
+        if [[ $par_impar == "par" ]]; then
+            if [[ "$(("$random_number" % 2))" -eq 0 ]]; then
+                if [[ "$random_number" -eq 0 ]]; then
+                    echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido el 0, ${redColour}por lo tanto perdemos${endColour}"
+                    win=0
+                else
+                    echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido un número par, ${greenColour}¡ganamos!${endColour}"
+                    win=1
+                fi
             else
-                echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido un número par${endColour}"
+                echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido un número impar, ${redColour}por lo tanto perdemos${endColour}"
+                win=0
+
             fi
-        else
-            echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido un número impar${endColour}"
         fi
-    sleep 2
+
+        if [[ $par_impar == "impar" ]]; then
+            if [[ "$(("$random_number" % 2))" -eq 0 ]]; then
+                if [[ "$random_number" -eq 0 ]]; then
+                    echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido el 0, ${redColour}por lo tanto perdemos${endColour}"
+                    win=0
+                else
+                    echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido un número par, ${redColour}por lo tanto perdemos${endColour}"
+                    win=0
+                fi
+            else
+                echo -e "${yellowColour}[+]${endColour} ${grayColour}Ha salido un número impar, ${greenColour}¡ganamos!${endColour}"
+                win=1
+            fi
+        fi
+
+        if [[ $win == "1" ]]; then
+            money=$(("$money" + "$initial_bet" * 2))
+            initial_bet=$backup_bet
+        else
+            initial_bet=$(("$initial_bet" * 2))
+        fi
+
+        echo -e "${yellowColour}[+]${endColour}${grayColour} Te quedan${endColour} ${yellowColour}$money€${endColour}"
+
+        if [[ $money -le 0 ]]; then
+            break
+        fi
     done
 
     tput cnorm
 
 }
-
 
 while getopts "m:t:h" arg; do
     case $arg in
@@ -73,9 +109,9 @@ while getopts "m:t:h" arg; do
     esac
 done
 
-if [ "$money" ] && [ "$technique" ]; then 
+if [ "$money" ] && [ "$technique" ]; then
     if [ "$technique" == "martingala" ]; then
-    echo -e "\n${yellowColour}[+]${endColour} Voy a jugar con ${purpleColour}$money€${endColour} usando la tecnica ${purpleColour}$technique${endColour}\n"
+        echo -e "\n${yellowColour}[+]${endColour} Voy a jugar con ${purpleColour}$money€${endColour} usando la tecnica ${purpleColour}$technique${endColour}\n"
         martingala
     elif [ "$technique" == "inverseLabrouchere" ]; then
         echo "w"
