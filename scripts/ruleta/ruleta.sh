@@ -35,7 +35,10 @@ function martingala() {
     echo -en "${yellowColour}[+]${endColour}${grayColour} Vamos a jugar con la catidad de: ${endColour}${yellowColour}$initial_bet€${endColour} ${grayColour}a${endColour} ${yellowColour}$par_impar${endColour}\n"
     tput civis
     backup_bet=$initial_bet
+    loosingStreak="[ "
+    play_counter=0
     while true; do
+        play_counter=$((play_counter + 1))
         money=$(($money - $initial_bet))
         echo -e "\n${yellowColour}[+]${endColour}${grayColour} Has apostado ${yellowColour}$initial_bet€${grayColour} y te quedan ${yellowColour}$money€${endColour}"
         random_number="$(($RANDOM % 37))"
@@ -75,13 +78,18 @@ function martingala() {
         if [[ $win == "1" ]]; then
             money=$(("$money" + "$initial_bet" * 2))
             initial_bet=$backup_bet
+            loosingStreak="["
         else
             initial_bet=$(("$initial_bet" * 2))
+            loosingStreak="$loosingStreak $random_number"
         fi
 
         echo -e "${yellowColour}[+]${endColour}${grayColour} Te quedan${endColour} ${yellowColour}$money€${endColour}"
 
         if [[ $money -le 0 ]]; then
+            echo -e "${redColour}[+] Te has quedado sin dinero despues de $play_counter jugadas.${endColour}"
+            loosingStreak="$loosingStreak ]"
+            echo -e "${redColour}[+] La cadena de tiros fallidos ha sido $loosingStreak.${endColour}"
             break
         fi
     done
