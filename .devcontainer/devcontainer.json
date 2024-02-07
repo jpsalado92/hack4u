@@ -29,12 +29,10 @@
         "jeff-hykin.better-shellscript-syntax",
         "rogalmic.bash-debug",
         "esbenp.prettier-vscode",
-        "Codeium.codeium",
         "ms-python.python",
         "ms-python.vscode-pylance",
 				"DavidAnson.vscode-markdownlint",
 				"eamodio.gitlens",
-				"Codeium.codeium",
 				"tamasfe.even-better-toml",
 				"charliermarsh.ruff"
       ],
