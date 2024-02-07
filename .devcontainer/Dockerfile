@@ -18,3 +18,7 @@ RUN pacman -Sy --noconfirm python-ruff
 
 # Get netcat
 RUN pacman -Sy --noconfirm gnu-netcat
+
+# Get tkinter for python
+RUN pacman -Sy --noconfirm tk
+RUN pacman -Sy --noconfirm xorg-fonts-100dpi
