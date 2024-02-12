@@ -1,7 +1,7 @@
 import socket
 import threading
 
-from tkinter import Tk, Entry, BOTH
+from tkinter import Tk, Entry, BOTH, Frame, Button
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 
@@ -49,7 +49,9 @@ def start_client():
         window.title("Chat")
         text_widget = ScrolledText(window, state="disabled")
         text_widget.pack(padx=5, pady=5)
-        entry_widget = Entry(window)
+        frame_widget = Frame(window)
+        frame_widget.pack(pady=5, padx=5, fill=BOTH, expand=1)
+        entry_widget = Entry(frame_widget)
         entry_widget.bind(
             sequence="<Return>",
             func=lambda _: send_message(
@@ -59,7 +61,9 @@ def start_client():
                 window=window
             ),
         )
-        entry_widget.pack(pady=5, padx=5, fill=BOTH, expand=1)
+        entry_widget.pack(fill=BOTH, expand=1, side=tk.LEFT)
+        button_widget = Button(frame_widget, text="Send", padx=5)
+        button_widget.pack(side=tk.RIGHT)
 
         thread = threading.Thread(target=receive_message, args=(s, text_widget))
         thread.daemon= True
