@@ -20,9 +20,10 @@ import socket
 import threading
 
 
-def broadcast(message, clients, prefix=""):
-    for client in clients:
-        client.send(prefix.encode("utf-8") + message)
+def broadcast(message, client_socket, clients, prefix=""):
+    for c in clients:
+        if c is not client_socket:
+            c.send(prefix.encode("utf-8") + message)
 
 
 def handle_client(conn, addr, clients, usernames):
@@ -34,7 +35,9 @@ def handle_client(conn, addr, clients, usernames):
     # print(f"Username of the client is {username}")
     broadcast(
         message=f"{username} has joined the chat!".encode("utf-8"),
+        client_socket=conn,
         clients=clients,
+        prefix="[server]: "
     )
     # conn.send("Connection successful!".encode("utf-8"))
 
@@ -49,20 +52,27 @@ def handle_client(conn, addr, clients, usernames):
                 conn.close()
                 clients.remove(conn)
                 broadcast(
-                    message=f"{username} has left the chat.".encode("utf-8"),
+                    message=f"`{username}` has left the chat.".encode("utf-8"),
+                    client_socket=conn,
                     clients=clients,
+                    prefix="[server]: "
                 )
-                print(f"\n[!] {addr} has disconnected")
                 break
             else:
-                broadcast(message, username + ": ")
-                print(f"{username} says {message}")
+                broadcast(
+                    message=message,
+                    client_socket=conn,
+                    clients=clients,
+                    prefix=f"[{username}]: "
+                )
         except:
             conn.close()
             clients.remove(conn)
             broadcast(
-                message=f"{username} has left the chat.".encode("utf-8"),
+                message=f"`{username}` has left the chat.",
+                client_socket=clients,
                 clients=clients,
+                prefix="[server]: "
             )
             print(f"\n[!] {addr} has disconnected")
             break
