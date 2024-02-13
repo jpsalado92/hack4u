@@ -22,3 +22,6 @@ RUN pacman -Sy --noconfirm gnu-netcat
 # Get tkinter for python
 RUN pacman -Sy --noconfirm tk
 RUN pacman -Sy --noconfirm xorg-fonts-100dpi
+
+# Get wireshark-cli
+RUN pacman -Sy --noconfirm wireshark-cli

@@ -22,8 +22,8 @@ import threading
 
 def broadcast(message, client_socket, clients, prefix=""):
     for c in clients:
-        if c is not client_socket:
-            c.send(prefix.encode("utf-8") + message)
+        if c != client_socket:
+            c.send(f"{prefix}{message}".encode("utf-8"))
 
 
 def handle_client(conn, addr, clients, usernames):
@@ -34,43 +34,48 @@ def handle_client(conn, addr, clients, usernames):
     usernames[conn] = username
     # print(f"Username of the client is {username}")
     broadcast(
-        message=f"{username} has joined the chat!".encode("utf-8"),
+        message=f"{username} has joined the chat!",
         client_socket=conn,
         clients=clients,
         prefix="[server]: "
     )
-    # conn.send("Connection successful!".encode("utf-8"))
+    conn.send(f"Connection successful!\nWelcome {username}\n".encode("utf-8"))
 
     while True:
         try:
-            message = conn.recv(1024)
-            if message.decode("utf-8") == "list":
+            message = conn.recv(1024).decode("utf-8")
+
+            if message == "list":
                 conn.send("Listing all users...".encode("utf-8"))
                 conn.send(" ".join(usernames.values()).encode("utf-8"))
-            elif message.decode("utf-8") == "quit":
+            elif message == "quit":
                 conn.send("Quitting...".encode("utf-8"))
                 conn.close()
                 clients.remove(conn)
                 broadcast(
-                    message=f"`{username}` has left the chat.".encode("utf-8"),
+                    message=f"`{username}` has left the chat.",
                     client_socket=conn,
                     clients=clients,
                     prefix="[server]: "
                 )
                 break
-            else:
+            elif message:
                 broadcast(
                     message=message,
                     client_socket=conn,
                     clients=clients,
                     prefix=f"[{username}]: "
                 )
-        except:
+            else:
+                pass
+
+        except Exception as e:
+            print(e)
             conn.close()
             clients.remove(conn)
             broadcast(
                 message=f"`{username}` has left the chat.",
-                client_socket=clients,
+                client_socket=conn,
                 clients=clients,
                 prefix="[server]: "
             )
