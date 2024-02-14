@@ -1,23 +1,6 @@
-# This is the server side of the chat application
-# It will allow multiple clients to connect to the server and send messages to each other
-# It will use threads and sockets to effectively establish the connections and user interactions.
-# Stuff:
-# - The server will be able to send messages to all connected clients.
-# - The server will be able to send private messages to specific clients.
-# - The server will be able to kick a client from the server.
-# - The server will be able to ban a client from the server.
-# - The server will be able to unban a client from the server.
-# - The server will be able to list all connected clients.
-# - The server will be able to list all banned clients.
-# - The server will be able to list all commands.
-# - The server will be able to list all users.
-# - The server will be able to list all messages.
-# - The server will be able to list all private messages.
-# - Every time a user connects, a message will be shown to every client connected to the server showing who connected.
-# - Every time a user disconnects, a message will be shown to every client connected to the server showing who disconnected.
-
 import socket
 import threading
+import ssl
 
 
 def broadcast(message, client_socket, clients, prefix=""):
@@ -28,7 +11,9 @@ def broadcast(message, client_socket, clients, prefix=""):
 
 def handle_client(conn, addr, clients, usernames):
     print(f"\n[!] New connection from {addr}\n")
-    conn.send("Welcome to the chat server! Please enter a username:".encode("utf-8"))
+    conn.send(
+        "Welcome to the chat server! Please enter a username:".encode("utf-8")
+    )
     username = conn.recv(1024).decode("utf-8")
     clients.append(conn)
     usernames[conn] = username
@@ -37,7 +22,7 @@ def handle_client(conn, addr, clients, usernames):
         message=f"{username} has joined the chat!",
         client_socket=conn,
         clients=clients,
-        prefix="[server]: "
+        prefix="[server]: ",
     )
     conn.send(f"Connection successful!\nWelcome {username}\n".encode("utf-8"))
 
@@ -56,7 +41,7 @@ def handle_client(conn, addr, clients, usernames):
                     message=f"`{username}` has left the chat.",
                     client_socket=conn,
                     clients=clients,
-                    prefix="[server]: "
+                    prefix="[server]: ",
                 )
                 break
             elif message:
@@ -64,7 +49,7 @@ def handle_client(conn, addr, clients, usernames):
                     message=message,
                     client_socket=conn,
                     clients=clients,
-                    prefix=f"[{username}]: "
+                    prefix=f"[{username}]: ",
                 )
             else:
                 pass
@@ -77,7 +62,7 @@ def handle_client(conn, addr, clients, usernames):
                 message=f"`{username}` has left the chat.",
                 client_socket=conn,
                 clients=clients,
-                prefix="[server]: "
+                prefix="[server]: ",
             )
             print(f"\n[!] {addr} has disconnected")
             break
@@ -89,6 +74,10 @@ def server_program():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((host, port))
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(certfile="server-cert.pem", keyfile="server-key.key")
+
+    server_socket = context.wrap_socket(server_socket, server_side=True)
     server_socket.listen()
     print("Server is listening for connections...")
     clients = []
@@ -103,5 +92,6 @@ def server_program():
             True  # Daemon threads will close when the main thread closes
         )
         thread.start()
+
 
 server_program()

@@ -23,5 +23,15 @@ RUN pacman -Sy --noconfirm gnu-netcat
 RUN pacman -Sy --noconfirm tk
 RUN pacman -Sy --noconfirm xorg-fonts-100dpi
 
-# Get wireshark-cli
+# Get xxd
+RUN pacman -Sy --noconfirm xxd
+
+# Get wireshark
+# - Get only the CLI version of wireshark
+# - Grant necessary capabilities to dumpcap
 RUN pacman -Sy --noconfirm wireshark-cli
+RUN pacman -Sy --noconfirm libcap
+RUN setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
+
+# Clear cache
+RUN pacman -Scc --noconfirm

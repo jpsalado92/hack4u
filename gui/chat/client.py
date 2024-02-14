@@ -1,5 +1,6 @@
 import socket
 import threading
+import ssl
 
 from tkinter import Tk, Entry, BOTH, Frame, Button
 import tkinter as tk
@@ -46,6 +47,7 @@ def write_to_chat_window(text, text_widget):
 
 def start_client():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s = ssl.wrap_socket(s)
         s.connect((HOST, PORT))
         window = Tk()
         window.title("Chat")

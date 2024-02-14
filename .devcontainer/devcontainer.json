@@ -2,6 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
   "name": "archlinux",
+  "runArgs": ["--cap-add=NET_ADMIN", "--cap-add=NET_RAW"],  // Required for network debugging
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "build": {
     // Path is relative to the devcontainer.json file.
