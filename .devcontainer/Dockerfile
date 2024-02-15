@@ -10,18 +10,19 @@ RUN pacman -Sy --noconfirm git
 RUN pacman -S nodejs --noconfirm npm
 RUN npm install -g js-beautify
 
-# Get python-pip
+# Get python packages
+# - Get pip
+# - Get ruff
+# - Get tkinter
 RUN pacman -Sy --noconfirm python-pip
-
-# Get python-ruff
 RUN pacman -Sy --noconfirm python-ruff
+RUN pacman -Sy --noconfirm tk
+RUN pacman -Sy --noconfirm scapy
+RUN pacman -Sy --noconfirm xorg-fonts-100dpi
 
 # Get netcat
 RUN pacman -Sy --noconfirm gnu-netcat
 
-# Get tkinter for python
-RUN pacman -Sy --noconfirm tk
-RUN pacman -Sy --noconfirm xorg-fonts-100dpi
 
 # Get xxd
 RUN pacman -Sy --noconfirm xxd
