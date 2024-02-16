@@ -1,6 +1,4 @@
 import socket
-import threading
-from queue import Queue
 
 host = input("Enter the host to scan: ")
 from_port = int(input("Enter the START of the port range to scan: "))

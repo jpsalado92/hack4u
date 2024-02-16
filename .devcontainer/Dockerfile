@@ -14,11 +14,14 @@ RUN npm install -g js-beautify
 # - Get pip
 # - Get ruff
 # - Get tkinter
+# - Get scapy
+# - Get python-termcolor
 RUN pacman -Sy --noconfirm python-pip
 RUN pacman -Sy --noconfirm python-ruff
 RUN pacman -Sy --noconfirm tk
 RUN pacman -Sy --noconfirm scapy
 RUN pacman -Sy --noconfirm xorg-fonts-100dpi
+RUN pacman -Sy --noconfirm python-termcolor
 
 # Get netcat
 RUN pacman -Sy --noconfirm gnu-netcat
