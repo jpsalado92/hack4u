@@ -49,13 +49,13 @@ def create_socket(port):
     return s
 
 
-def port_scanner(host, port) -> tuple[int | None, str | None]:
+def port_scanner(host, port) -> tuple[int | None, list[str] | None]:
     s = create_socket(port)
     try:
         s.connect((host, port))
-        s.sendall(b"HEAD / HTTP/1.0\r\n\r\n")
+        s.sendall(b"HEAD / HTTP/1.1\r\n\r\n")
         response = s.recv(1024)
-        response = response.decode(errors="ignore").split("\n")[0]
+        response = response.decode(errors="ignore").split("\n")
         if response:
             header = response
         else:
@@ -103,10 +103,8 @@ def simple_scanner(target, ports):
     for port in ports:
         results.append(port_scanner(target, port))
     open_ports = [r for r in results if r != (None, None)]
-    print("    - Open Ports:")
-    for op in open_ports:
-        print(f"        - {op}")
-    print(f"    - Elapsed Time: {time.time() - t0}\n")
+    print_results(t0, open_ports)
+
 
 
 def basic_threading_scanner(target, ports):
@@ -125,10 +123,18 @@ def basic_threading_scanner(target, ports):
     for thread in threads:
         thread.join()
 
+    print_results(t0, results)
+
+def print_results(t0, results):
     open_ports = [r for r in results if r != (None, None)]
     print("    - Open Ports:")
     for op in open_ports:
-        print(f"        - {op}")
+        print(f"        - {op[0]}")
+        if op[1] == [""]:
+            continue
+        for l in op[1]:
+            if not l.strip() == "":
+                print(colored(f"            - {l}", "grey"))
     print(f"    - Elapsed Time: {time.time() - t0}\n")
 
 
@@ -140,10 +146,7 @@ def pool_executor_scanner(target, ports):
         for result in executor.map(port_scanner, [target] * len(ports), ports):
             results.append(result)
     open_ports = [r for r in results if r != (None, None)]
-    print("    - Open Ports:")
-    for op in open_ports:
-        print(f"        - {op}")
-    print(f"    - Elapsed Time: {time.time() - t0}\n")
+    print_results(t0, open_ports)
 
 
 if __name__ == "__main__":
