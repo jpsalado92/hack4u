@@ -31,7 +31,7 @@ def get_arguments():
         "--target",
         required=True,
         dest="target",
-        help="Target IP / IP range",
+        help="hostname / Target IP / IP range",
     )
     args = parser.parse_args()
     return args.target
@@ -53,12 +53,35 @@ def parse_target(target):
 
 
 def validate_target(target):
-    if re.match(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", target):
-        return True
-    elif re.match(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}-\d{1,3}", target):
-        return True
+    if is_ip(target):
+        return target
+    elif is_ip_range(target):
+        return target
     else:
-        return False
+        ip = resolve_hostname(target)
+        if ip:
+            return ip
+        else:
+            return False
+
+
+def resolve_hostname(target):
+    if target == "localhost":
+        return "127.0.0.1"
+    else:
+        try:
+            return (
+                subprocess.run(
+                    f"getent hosts {target}",
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                )
+                .stdout.strip()
+                .split(" ")[0]
+            )
+        except subprocess.CalledProcessError:
+            raise ValueError("Invalid hostname")
 
 
 def host_discovery(target):
@@ -77,15 +100,24 @@ def host_discovery(target):
         print(colored(f"[-] {target} is down", "red"))
 
 
+def is_ip(target):
+    return re.match(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", target)
+
+
+def is_ip_range(target):
+    return re.match(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}-\d{1,3}", target)
+
+
 def main():
     target = get_arguments()
-    if not validate_target(target):
-        raise ValueError("Invalid target IP / IP range")
+    target = validate_target(target)
+    if not target:
+        raise ValueError("Invalid target hostname / IP / IP range")
     targets = parse_target(target)
     print(colored(f"\n[*] Scanning {target}...", "green"))
     print(colored(f"\n[*] Targets to scan: {targets}", "grey"))
     print(colored("\n[*] Scanning started...", "green"))
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=100) as executor:
         executor.map(host_discovery, targets)
     print(colored("\n[*] Scanning completed...", "green"))
 
