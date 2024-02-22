@@ -91,4 +91,5 @@ def main():
         change_mac_address(interface, mac)
 
 
-main()
+if __name__ == '__main__':
+    main()
