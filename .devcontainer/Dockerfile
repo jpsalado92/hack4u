@@ -16,12 +16,17 @@ RUN npm install -g js-beautify
 # - Get tkinter
 # - Get scapy
 # - Get python-termcolor
+# - Get python-scapy
+# - Get arp-scan
 RUN pacman -Sy --noconfirm python-pip
 RUN pacman -Sy --noconfirm python-ruff
 RUN pacman -Sy --noconfirm tk
 RUN pacman -Sy --noconfirm scapy
 RUN pacman -Sy --noconfirm xorg-fonts-100dpi
 RUN pacman -Sy --noconfirm python-termcolor
+RUN pacman -Sy --noconfirm python-scapy
+RUN pacman -Sy --noconfirm arp-scan
+RUN pacman -Sy --noconfirm net-tools
 
 # Get netcat
 RUN pacman -Sy --noconfirm gnu-netcat
@@ -34,6 +39,7 @@ RUN pacman -Sy --noconfirm xxd
 # - Get only the CLI version of wireshark
 # - Grant necessary capabilities to dumpcap
 RUN pacman -Sy --noconfirm wireshark-cli
+RUN pacman -Sy --noconfirm wireshark-qt
 RUN pacman -Sy --noconfirm libcap
 RUN setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
 
