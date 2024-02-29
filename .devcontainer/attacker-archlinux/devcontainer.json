@@ -1,17 +1,13 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-  "name": "archlinux",
-  "runArgs": ["--cap-add=NET_ADMIN", "--cap-add=NET_RAW"],  // Required for network debugging
+  "name": "hack4u-attacker-archlinux",
+
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "build": {
-    // Path is relative to the devcontainer.json file.
-    "dockerfile": "Dockerfile"
-  },
-  // Features to add to the dev container. More info: https://containers.dev/features.
-  // "features": {
-	// 	"ghcr.io/devcontainers/features/git:1": {}
-	// },
+	"dockerComposeFile": ["../docker-compose.yml"],
+	"service": "attacker-archlinux",
+  "shutdownAction": "none",
+  "workspaceFolder": "/workspace/",
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
@@ -48,5 +44,5 @@
   },
 
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  "remoteUser": "root"
+  // "remoteUser": "root"
 }

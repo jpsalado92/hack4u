@@ -1,0 +1,8 @@
+
+# What is ARP Spoofing?
+
+An ARP (Address Resolution Protocol) spoofer is a type of network attack where an attacker sends forged ARP messages onto a local area network (LAN). ARP is used by devices within a network to map IP addresses to MAC addresses. By sending spoofed ARP messages, the attacker can associate their MAC address with the IP address of another legitimate device on the network, such as the default gateway or another host.
+
+The goal of ARP spoofing is typically to intercept, modify, or redirect traffic intended for the targeted device, or to launch a man-in-the-middle attack. Once the attacker's MAC address is associated with the IP address of the target, traffic meant for the target is sent to the attacker's machine instead. The attacker can then inspect, modify, or redirect this traffic before forwarding it to the intended recipient, potentially allowing them to eavesdrop on sensitive information, perform session hijacking, or carry out other malicious activities.
+
+ARP spoofing attacks can be mitigated through various means, such as using static ARP entries, implementing ARP spoofing detection and prevention mechanisms, deploying intrusion detection systems, and employing cryptographic protocols like ARP spoofing-resistant network protocols such as ARPSEC or using network security solutions like intrusion prevention systems (IPS) or network access control (NAC) systems.
