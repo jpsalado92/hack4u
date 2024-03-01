@@ -3,10 +3,10 @@
 {
 	"name": "hack4u-victim-ubuntu",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"dockerComposeFile": ["../docker-compose.yml"],
+	"dockerComposeFile": ["../../docker-compose.yml"],
 	"service": "victim-ubuntu",
 	"shutdownAction": "none",
-	"workspaceFolder": "/workspace/victim-ubuntu"
+	"workspaceFolder": "/workspace/src/victim-ubuntu",
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -16,6 +16,7 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "uname -a",
+	"postStartCommand": "cat /etc/lsb-release"
 
 	// Configure tool-specific properties.
 	// "customizations": {},

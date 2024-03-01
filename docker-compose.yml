@@ -3,27 +3,27 @@ version: '3.8'
 services:
   attacker-archlinux:
     build:
-      context: ..
+      context: .
       dockerfile: .devcontainer/attacker-archlinux/Dockerfile
 
     networks:
       - hack4u-network
     volumes:
       # Mount the root folder that contains .git
-      - .:/workspace:cached
+      - .:/workspace
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
   victim-ubuntu:
     build:
-      context: ..
+      context: .
       dockerfile: .devcontainer/victim-ubuntu/Dockerfile
     networks:
       - hack4u-network
     volumes:
       # Mount the root folder that contains .git
-      - .:/workspace:cached
+      - .:/workspace
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
