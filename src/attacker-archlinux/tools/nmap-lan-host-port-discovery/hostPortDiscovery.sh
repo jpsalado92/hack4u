@@ -9,5 +9,5 @@ function ctrl_c(){
 trap ctrl_c INT
 
 for i in $(seq 1 254); do
-  (nmap -p- --open -T4 192.168.1.$i &>/dev/null) && echo "[+] Host 192.168.1.$i - ACTIVE" &
+  (timeout 1 nmap -p- --open -T4 192.168.1.$i &>/dev/null) && echo "[+] Host 192.168.1.$i - ACTIVE" &
 done; wait
