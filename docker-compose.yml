@@ -5,13 +5,11 @@ services:
     build:
       context: .
       dockerfile: .devcontainer/attacker-archlinux/Dockerfile
-
     networks:
       - hack4u-network
     volumes:
       # Mount the root folder that contains .git
       - .:/workspace
-
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
@@ -24,7 +22,6 @@ services:
     volumes:
       # Mount the root folder that contains .git
       - .:/workspace
-
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
