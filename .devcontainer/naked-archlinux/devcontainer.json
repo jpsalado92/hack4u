@@ -1,0 +1,7 @@
+{
+  "name": "hack4u-naked-archlinux",
+	"dockerComposeFile": ["../../docker-compose.yml"],
+	"service": "naked-archlinux",
+  "shutdownAction": "none",
+  "workspaceFolder": "/workspace/src/naked-archlinux",
+}

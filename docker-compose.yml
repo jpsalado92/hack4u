@@ -25,6 +25,18 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
+  naked-archlinux:
+    build:
+      context: .
+      dockerfile: .devcontainer/naked-archlinux/Dockerfile
+    networks:
+      - hack4u-network
+    volumes:
+      # Mount the root folder that contains .git
+      - .:/workspace
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
 networks:
   hack4u-network:
     driver: bridge
