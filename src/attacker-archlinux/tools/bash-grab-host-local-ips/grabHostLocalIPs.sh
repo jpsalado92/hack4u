@@ -10,7 +10,7 @@ fi
 
 # If the `ip` command fails, try to get the IP address from the `ifconfig` command
 if [ -z "$IP" ]; then
-    IP=$(ifconfig 2>/dev/null | grep "inet " | awk '{print $2}') 2>/dev/null
+    IP=$(ifconfig 2>/dev/null | grep "inet " | awk '{print $2}')
 fi
 
 # If the `ifconfig` command fails, try to get the IP address from the `hostname` command
