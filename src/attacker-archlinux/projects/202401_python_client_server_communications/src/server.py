@@ -1,4 +1,6 @@
 import socket
+
+
 def start_chat_server():
     host = "localhost"
     port = 1234
@@ -28,6 +30,6 @@ def start_chat_server():
         print(f"-> Message sent by the server: {server_message}")
         connection.send(server_message.encode())
     connection.close()
-        
+
 
 start_chat_server()
