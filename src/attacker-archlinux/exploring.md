@@ -9,3 +9,4 @@ https://gtfobins.github.io/
 
 cap_setuid=ep
 
+https://github.com/paralax/awesome-honeypots
