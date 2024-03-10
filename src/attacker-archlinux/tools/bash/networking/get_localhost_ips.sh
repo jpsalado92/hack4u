@@ -18,10 +18,14 @@ if [ -z "$IP" ]; then
     IP=$(hostname -I 2>/dev/null)
 fi
 
-# Filter loopback address
+# # Filter loopback address
 IP=$(echo "$IP" | grep -v "127.0.0.1")
 
 # Format the IP addresses
 IP=$(echo "$IP" | cut -d/ -f1 | tr '\n' ' ' | sed 's/ $//')
+
+if [ -z "$IP" ]; then
+    IP="<UNABLE_TO_COLLECT_ICDR_IP>"
+fi
 
 echo "$IP"

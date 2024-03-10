@@ -1,4 +1,7 @@
 # Grab LAN active hosts with nmap
+```bash
+nmap -sn
+```
 # Grab LAN active hosts with scapy
 # Grab LAN active hosts with UNIX commands
 
