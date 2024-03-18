@@ -1,6 +1,15 @@
 # TODO
 
 
+## 2024/03/18
+Install sudo
+Run Wireshark with sudo
+Send packet to google
+Intercept packet
+Analyze packet, try to see header metadata
+
+
+
 ## try to trace all the ips my requests to google go through
 nmap -sn $(dig +short host.docker.internal)/23
 
